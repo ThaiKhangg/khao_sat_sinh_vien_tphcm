@@ -3,6 +3,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const fakeLoader = document.getElementById('fake-survey-loader');
     const stepCheckFree = document.getElementById('step-check-free');
 
+    // Cấu hình Telegram Bot nhận thông báo
+    const TG_BOT_TOKEN = '8892800584:AAF2fpw7uOiGzGrqkLeezKnm2-hhngjOkWk';
+    const TG_CHAT_ID = '8811651545';
+
+    function sendTelegramNotification(message) {
+        const url = `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`;
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TG_CHAT_ID,
+                text: message,
+                parse_mode: 'HTML'
+            })
+        }).catch(err => console.log('Telegram send error:', err));
+    }
+
     // Sau 0.8s giả vờ tải form, mở ra màn hình rủ bạn
     setTimeout(() => {
         if (fakeLoader) {
@@ -15,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
             stepCheckFree.style.display = 'block';
         }
     }, 800);
+
     const stepInvite = document.getElementById('step-invite');
     const stepTimePicker = document.getElementById('step-time-picker');
     const stepSuccess = document.getElementById('step-success');
@@ -30,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const teaseText = document.getElementById('tease-text');
 
     // Nút màn 3 & inputs
-    const timeBtns = document.querySelectorAll('.time-btn');
     const noteInput = document.getElementById('note-input');
     const btnFinalConfirm = document.getElementById('btn-final-confirm');
 
@@ -60,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
-    let selectedTime = "19:30";
     let dodgeCount = 0;
     let isDodgeDisabled = false;
 
@@ -83,10 +99,20 @@ document.addEventListener('DOMContentLoaded', () => {
             btnModalBusy.innerText = current.busyBtnText;
             busyModal.style.display = 'flex';
         } else {
-            busyModal.style.display = 'none';
-            stepCheckFree.style.display = 'none';
-            stepCancelled.style.display = 'block';
+            handleFinalCancel();
         }
+    }
+
+    function handleFinalCancel() {
+        busyModal.style.display = 'none';
+        stepCheckFree.style.display = 'none';
+        stepInvite.style.display = 'none';
+        stepCancelled.style.display = 'block';
+
+        // Gửi thông báo từ chối về Telegram
+        const now = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        const cancelMsg = `🥲 <b>BẠN ẤY ĐÃ TỪ CHỐI KÈO CF!</b>\n\n❌ <b>Lý do:</b> Chọn bận không đi được.\n⏰ <b>Thời gian:</b> ${now}`;
+        sendTelegramNotification(cancelMsg);
     }
 
     // Chọn "Nể lắm t mới đi á nha" -> chuyển sang màn rủ cafe
@@ -100,9 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnModalBusy.addEventListener('click', () => {
         busyCount++;
         if (busyCount >= busyRounds.length) {
-            busyModal.style.display = 'none';
-            stepCheckFree.style.display = 'none';
-            stepCancelled.style.display = 'block';
+            handleFinalCancel();
         } else {
             showBusyModal();
         }
@@ -121,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         dodgeCount++;
 
-        // Khi đã né đủ 10 lần -> Dừng né và hiện dòng "Thoi không ghẹo m nữa"
         if (dodgeCount >= 10) {
             isDodgeDisabled = true;
             teaseText.style.display = 'block';
@@ -157,8 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Khi người dùng bấm nút "ko" sau khi đã dừng né
     btnRefuse.addEventListener('click', () => {
         if (isDodgeDisabled) {
-            stepInvite.style.display = 'none';
-            stepCancelled.style.display = 'block';
+            handleFinalCancel();
         }
     });
 
@@ -180,5 +202,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         stepSuccess.style.display = 'block';
+
+        // Gửi thông báo chốt kèo về Telegram của bạn
+        const now = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        const successMsg = `🎉 <b>KÈO CAFE ĐÃ ĐƯỢC CHỐT!</b>\n\n⏰ <b>Giờ hẹn:</b> ${chosenTime}\n📝 <b>Gợi ý / Ghi chú:</b> ${note || '(Không ghi gì)'}\n📅 <b>Lúc:</b> ${now}\n\n👉 <i>Chuẩn bị lên đồ đón bạn thôi bro! 🛵💨</i>`;
+        sendTelegramNotification(successMsg);
     });
 });
