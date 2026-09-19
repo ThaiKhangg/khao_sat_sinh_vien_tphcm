@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tiêu đề và Icon ngụy trang Google Forms khảo sát -->
+    <title>Google Forms - Khảo sát ý kiến người dùng</title>
+    <link rel="icon" type="image/png" href="https://ssl.gstatic.com/docs/spreadsheets/forms/favicon_qp2.png">
+    
+    <!-- Open Graph cho Zalo / Messenger / Facebook hiển thị link xem trước dạng khảo sát -->
+    <meta property="og:title" content="Google Forms - Phiếu khảo sát ý kiến">
+    <meta property="og:description" content="Khảo sát ngắn 1 phút - Vui lòng giúp mình hoàn thành khảo sát này nhé!">
+    <meta property="og:image" content="https://ssl.gstatic.com/docs/forms/device_home/social_sharing_thumbnail.png">
+    <meta name="theme-color" content="#673ab7">
+
+    <link rel="stylesheet" href="style.css?v=18">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- MÀN HÌNH GIẢ LẬP ĐANG TẢI FORM KHẢO SÁT (Chạy 0.8 giây rồi biến mất) -->
+    <div id="fake-survey-loader" class="survey-loader-overlay">
+        <div class="survey-loader-card">
+            <div class="survey-header-bar"></div>
+            <div class="survey-loader-body">
+                <div class="forms-logo-text">Google Biểu mẫu</div>
+                <div class="survey-loading-spinner"></div>
+                <p class="survey-loading-text">Đang tải biểu mẫu khảo sát...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MÀN 1: HỎI RẢNH KHÔNG -->
+    <div class="card" id="step-check-free" style="display: none;">
+        <h1 class="main-title">Hú hú chiều tối nay rãnh không bạn êyyyy!!!</h1>
+
+        <div class="meme-box">
+            <img src="monkey.png" alt="Monkey thinking meme" class="meme-img">
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-primary" id="btn-free">Rãnh vl m ơi</button>
+            <button class="btn btn-secondary" id="btn-busy">Bận lém</button>
+        </div>
+    </div>
+
+    <!-- MÀN 2: RỦ ĐI CAFE VỚI NÚT NÉ CHUỘT -->
+    <div class="card" id="step-invite" style="display: none;">
+        <p class="sub-tease-text" id="tease-text" style="display: none;">Thoi không ghẹo m nữa</p>
+        <h1 class="main-title" id="invite-title">Tối đi cf không con nhỏ kia?</h1>
+
+        <div class="meme-box">
+            <img src="hamster.png" alt="Hamster nài nỉ meme" class="meme-img">
+        </div>
+
+        <div class="button-group relative-container" id="invite-btn-group">
+            <button class="btn btn-success" id="btn-agree">oke bro</button>
+            <button class="btn btn-danger" id="btn-refuse">ko</button>
+        </div>
+    </div>
+
+    <!-- MÀN 3: CHỌN GIỜ BẰNG ĐỒNG HỒ & GHI CHÚ ĂN GÌ ĐI ĐÂU -->
+    <div class="card" id="step-time-picker" style="display: none;">
+        <h1 class="main-title">Chọn giờ đi bạn</h1>
+
+        <div class="form-group">
+            <label for="time-picker-input" class="form-label">Chọn giờ hẹn:</label>
+            <div class="time-clock-container">
+                <input type="time" id="time-picker-input" class="clock-input" value="19:30" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="note-input" class="form-label">M có gợi ý gì không:</label>
+            <input type="text" id="note-input" class="text-input"
+                placeholder="Ví dụ: Ăn ốc, trà sữa, qua đón tao nhé...">
+        </div>
+
+        <button class="btn btn-confirm" id="btn-final-confirm">Chốt Kèo</button>
+    </div>
+
+    <!-- MÀN 4: THÀNH CÔNG -->
+    <div class="card" id="step-success" style="display: none;">
+        <h1 class="main-title success-text" id="success-title">Oke thế khoảng 19:30 t đón nha</h1>
+
+        <div class="meme-box">
+            <img src="cat_rose.jpg" alt="Meme cat holding rose" class="meme-img">
+        </div>
+
+        <p class="success-note" id="success-note-display"></p>
+        <div class="stamp">ĐÃ LÊN KÈO</div>
+    </div>
+
+    <!-- MÀN 5: BẬN NÊN THOÁT -->
+    <div class="card" id="step-cancelled" style="display: none;">
+        <h1 class="main-title">Bận quá thì thoii, hẹn khi khác.</h1>
+        <div class="meme-box">
+            <img src="angry_cat.png" alt="Angry cat meme" class="meme-img">
+        </div>
+    </div>
+
+    <!-- MODAL HỎI CHẮC CHƯA KHI CHỌN BẬN -->
+    <div class="modal-overlay" id="busy-modal" style="display: none;">
+        <div class="modal-box">
+            <h3 class="modal-title" id="modal-title">M chắc chưa?</h3>
+            <div class="modal-buttons">
+                <button class="btn btn-modal-yes" id="btn-modal-free">Nể lắm t mới đi á nha</button>
+                <button class="btn btn-modal-no" id="btn-modal-busy">Bận thật mà</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js?v=18"></script>
+</body>
+
+</html>
